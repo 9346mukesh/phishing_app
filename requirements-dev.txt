@@ -17,6 +17,7 @@ isort>=5.12.0               # Import sorter
 flake8>=6.0.0               # Style guide enforcement
 mypy>=1.5.0                 # Static type checker
 ruff>=0.1.0                 # Fast Python linter
+types-requests>=2.31.0      # Type stubs for requests library
 
 # Documentation
 mkdocs>=1.5.0               # Documentation generator

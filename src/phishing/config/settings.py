@@ -18,9 +18,9 @@ class Settings(BaseSettings):
     # API Configuration
     api_host: str = os.getenv("API_HOST", "0.0.0.0")
     api_port: int = int(
-        os.getenv("PORT") or os.getenv("API_PORT", "8000")
+        os.getenv("PORT") or os.getenv("API_PORT") or "8000"
     )  # Support Railway's PORT env var
-    api_workers: int = int(os.getenv("API_WORKERS", "4"))
+    api_workers: int = int(os.getenv("API_WORKERS") or "4")
     cors_origins: list = os.getenv("CORS_ORIGINS", "*").split(",")
 
     # Model Configuration
@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     # Security
     api_key: Optional[str] = os.getenv("API_KEY")
     enable_rate_limiting: bool = os.getenv("ENABLE_RATE_LIMITING", "true").lower() == "true"
-    rate_limit_requests: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
-    rate_limit_period: int = int(os.getenv("RATE_LIMIT_PERIOD", "60"))
+    rate_limit_requests: int = int(os.getenv("RATE_LIMIT_REQUESTS") or "100")
+    rate_limit_period: int = int(os.getenv("RATE_LIMIT_PERIOD") or "60")
 
     # Logging
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
@@ -46,7 +46,7 @@ class Settings(BaseSettings):
 
     # Monitoring
     enable_metrics: bool = os.getenv("ENABLE_METRICS", "true").lower() == "true"
-    metrics_port: int = int(os.getenv("METRICS_PORT", "9090"))
+    metrics_port: int = int(os.getenv("METRICS_PORT") or "9090")
 
     # Performance
     request_timeout: float = float(os.getenv("REQUEST_TIMEOUT", "30.0"))

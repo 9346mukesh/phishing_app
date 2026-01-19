@@ -95,6 +95,10 @@ class PhishingDetector:
                 features = extract_features_from_url(validated_url)
                 features_array = np.array(features).reshape(1, -1)
 
+                # Check model and scaler are initialized
+                if self.model is None or self.scaler is None:
+                    raise DetectionError("Model or scaler not initialized")
+
                 # Scale features
                 scaled = self.scaler.transform(features_array)
 

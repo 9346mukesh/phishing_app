@@ -25,8 +25,9 @@ class JSONFormatter(logging.Formatter):
         }
 
         if record.exc_info:
+            exception_type = record.exc_info[0]
             log_data["exception"] = {
-                "type": record.exc_info[0].__name__,
+                "type": exception_type.__name__ if exception_type is not None else "Unknown",
                 "message": str(record.exc_info[1]),
                 "traceback": traceback.format_exception(*record.exc_info),
             }
@@ -68,11 +69,12 @@ class SafeErrorHandler:
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exit context with error handling."""
         if exc_type is not None:
+            error_type_name = exc_type.__name__ if exc_type is not None else "Unknown"
             self.logger.error(
                 f"Error during {self.operation}: {exc_val}",
                 exc_info=True,
                 extra={
-                    "error_type": exc_type.__name__,
+                    "error_type": error_type_name,
                     "operation": self.operation,
                 },
             )

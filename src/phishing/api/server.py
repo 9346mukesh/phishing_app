@@ -133,19 +133,19 @@ def create_app() -> FastAPI:
             raise HTTPException(
                 status_code=400,
                 detail=safe_error_message(e),
-            )
+            ) from e
         except DetectionError as e:
             logger.error(f"Detection error: {str(e)}", exc_info=True)
             raise HTTPException(
                 status_code=500,
                 detail=safe_error_message(e),
-            )
+            ) from e
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}", exc_info=True)
             raise HTTPException(
                 status_code=500,
                 detail="An unexpected error occurred",
-            )
+            ) from e
 
     @app.post("/predict-batch", response_model=BatchPredictionResponse, tags=["Prediction"])
     async def predict_batch(request: BatchPredictionRequest):
@@ -185,7 +185,7 @@ def create_app() -> FastAPI:
             raise HTTPException(
                 status_code=500,
                 detail="Batch prediction failed",
-            )
+            ) from e
 
     @app.get("/info", tags=["System"])
     async def get_info():
