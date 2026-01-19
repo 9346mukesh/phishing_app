@@ -12,7 +12,7 @@ pytest-xdist>=3.5.0         # Parallel test execution
 pytest-timeout>=2.2.0       # Test timeout protection
 
 # Code formatting and linting
-black>=23.0.0               # Code formatter
+black==24.10.0              # Code formatter (version pinned)
 isort>=5.12.0               # Import sorter
 flake8>=6.0.0               # Style guide enforcement
 mypy>=1.5.0                 # Static type checker
