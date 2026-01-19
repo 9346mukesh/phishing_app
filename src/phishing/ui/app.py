@@ -113,7 +113,8 @@ st.markdown(
 )
 
 # API configuration
-API_URL = os.getenv("API_URL", "http://localhost:8000")
+# Prefer Streamlit secrets in cloud, fall back to environment/local default
+API_URL = os.getenv("API_URL") or st.secrets.get("API_URL", "http://localhost:8000")
 
 
 def get_api_health():
