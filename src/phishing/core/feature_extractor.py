@@ -13,7 +13,9 @@ from src.phishing.utils.logging_config import get_logger
 logger = get_logger(__name__)
 
 # Feature extraction constants
-SHORTENING_SERVICES = r"bit\.ly|goo\.gl|tinyurl|ow\.ly|t\.co|is\.gd|cli\.gs|short\.link|bitly|tinyurl"
+SHORTENING_SERVICES = (
+    r"bit\.ly|goo\.gl|tinyurl|ow\.ly|t\.co|is\.gd|cli\.gs|short\.link|bitly|tinyurl"
+)
 PHISHING_KEYWORDS = r"confirm|verify|account|update|secure|alert|action"
 NUM_FEATURES = 30
 

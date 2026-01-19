@@ -1,18 +1,16 @@
 """Tests for model loader module."""
 
-import hashlib
 import os
 import tempfile
 from unittest import mock
 
 import pytest
-import joblib
 
 from src.phishing.core.model_loader import (
-    calculate_checksum,
-    validate_checksum,
-    load_model_and_scaler_safe,
     ModelLoadError,
+    calculate_checksum,
+    load_model_and_scaler_safe,
+    validate_checksum,
 )
 
 

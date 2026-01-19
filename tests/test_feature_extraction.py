@@ -3,13 +3,13 @@
 import pytest
 
 from src.phishing.core.feature_extractor import (
+    NUM_FEATURES,
+    FeatureExtractionError,
+    extract_at_symbol,
     extract_features_from_url,
     extract_ip_address,
-    extract_url_length,
-    extract_at_symbol,
     extract_subdomain_count,
-    FeatureExtractionError,
-    NUM_FEATURES,
+    extract_url_length,
 )
 
 

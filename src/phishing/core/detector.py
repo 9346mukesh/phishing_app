@@ -1,15 +1,16 @@
 """Main phishing detection logic."""
 
-import numpy as np
 from typing import Optional, Tuple
+
+import numpy as np
 
 from src.phishing.config.settings import settings
 from src.phishing.core.feature_extractor import (
-    extract_features_from_url,
     FeatureExtractionError,
+    extract_features_from_url,
 )
-from src.phishing.core.model_loader import load_model_and_scaler_safe, ModelLoadError
-from src.phishing.utils.logging_config import get_logger, SafeErrorHandler
+from src.phishing.core.model_loader import load_model_and_scaler_safe  # noqa: F401
+from src.phishing.utils.logging_config import SafeErrorHandler, get_logger
 from src.phishing.utils.validators import URLValidationError, validate_url
 
 logger = get_logger(__name__)
@@ -152,20 +153,24 @@ class PhishingDetector:
         for url in urls:
             try:
                 prediction, confidence, label = self.predict(url)
-                results.append({
-                    "url": url,
-                    "prediction": prediction,
-                    "confidence": confidence,
-                    "label": label,
-                    "status": "success",
-                })
+                results.append(
+                    {
+                        "url": url,
+                        "prediction": prediction,
+                        "confidence": confidence,
+                        "label": label,
+                        "status": "success",
+                    }
+                )
             except DetectionError as e:
                 failed_count += 1
-                results.append({
-                    "url": url,
-                    "error": str(e),
-                    "status": "failed",
-                })
+                results.append(
+                    {
+                        "url": url,
+                        "error": str(e),
+                        "status": "failed",
+                    }
+                )
                 logger.warning(f"Batch prediction failed for {url}: {str(e)}")
 
         logger.info(

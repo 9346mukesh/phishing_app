@@ -156,14 +156,18 @@ def log_structured(
     log_func = getattr(logger, level.lower(), logger.info)
 
     for key, value in kwargs.items():
-        setattr(logging.LogRecord(
-            name=logger.name,
-            level=getattr(logging, level),
-            pathname="",
-            lineno=0,
-            msg="",
-            args=(),
-            exc_info=None,
-        ), key, value)
+        setattr(
+            logging.LogRecord(
+                name=logger.name,
+                level=getattr(logging, level),
+                pathname="",
+                lineno=0,
+                msg="",
+                args=(),
+                exc_info=None,
+            ),
+            key,
+            value,
+        )
 
     log_func(message, extra=kwargs)

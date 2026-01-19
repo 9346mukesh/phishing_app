@@ -4,7 +4,9 @@
 # Core dependencies
 -r requirements.txt
 
-# Additional development tools
+# Testing tools
+pytest>=7.4.0               # Testing framework
+pytest-cov>=4.1.0          # Code coverage reporting
 pytest-watch>=4.2.0          # Auto-run tests on file changes
 pytest-xdist>=3.5.0         # Parallel test execution
 pytest-timeout>=2.2.0       # Test timeout protection

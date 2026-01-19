@@ -71,7 +71,9 @@ def validate_url(url: str, strict: bool = True) -> str:
             validated = HttpUrl(url)
             return str(validated)
         except ValidationError as e:
-            raise URLValidationError(f"Invalid URL format: {e.error_count()} validation error(s)") from e
+            raise URLValidationError(
+                f"Invalid URL format: {e.error_count()} validation error(s)"
+            ) from e
         except Exception as e:
             raise URLValidationError(f"Invalid URL: {str(e)}") from e
     else:

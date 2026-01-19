@@ -3,9 +3,9 @@
 import pytest
 
 from src.phishing.utils.validators import (
-    validate_url,
-    validate_batch_urls,
     URLValidationError,
+    validate_batch_urls,
+    validate_url,
 )
 
 

@@ -1,8 +1,9 @@
 """Tests for FastAPI application."""
 
+from unittest.mock import Mock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import Mock, patch, MagicMock
 
 from src.phishing.api.server import create_app
 from src.phishing.core.detector import PhishingDetector
@@ -61,7 +62,8 @@ class TestAPIPredictEndpoint:
     @patch("src.phishing.api.server.detector")
     def test_predict_legitimate_url(self, mock_detector_global, client, mock_detector):
         """Test prediction for legitimate URL."""
-        mock_detector_global = mock_detector
+        mock_detector_global.is_ready = True
+        mock_detector_global.predict.return_value = (0, 0.95, "✅ Legitimate")
         response = client.post(
             "/predict",
             json={"url": "https://www.google.com"},

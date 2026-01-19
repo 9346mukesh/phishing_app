@@ -17,7 +17,9 @@ class Settings(BaseSettings):
 
     # API Configuration
     api_host: str = os.getenv("API_HOST", "0.0.0.0")
-    api_port: int = int(os.getenv("PORT") or os.getenv("API_PORT", "8000"))  # Support Railway's PORT env var
+    api_port: int = int(
+        os.getenv("PORT") or os.getenv("API_PORT", "8000")
+    )  # Support Railway's PORT env var
     api_workers: int = int(os.getenv("API_WORKERS", "4"))
     cors_origins: list = os.getenv("CORS_ORIGINS", "*").split(",")
 
@@ -52,6 +54,7 @@ class Settings(BaseSettings):
 
     class Config:
         """Pydantic config."""
+
         case_sensitive = False
         env_file = ".env"
         env_file_encoding = "utf-8"

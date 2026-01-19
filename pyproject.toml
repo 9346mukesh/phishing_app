@@ -46,7 +46,7 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "-v --strict-markers --tb=short --cov=src/phishing --cov-report=html --cov-report=term-missing"
+addopts = "-v --strict-markers --tb=short"
 markers = [
     "unit: unit tests",
     "integration: integration tests",
@@ -74,7 +74,6 @@ extend-exclude = '''
 [tool.isort]
 profile = "black"
 line_length = 100
-multi_line_mode = 3
 include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true

@@ -1,24 +1,23 @@
 """FastAPI application for production serving."""
 
-import os
 import time
-from typing import Optional
 from contextlib import asynccontextmanager
+from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request, Depends, Header
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from fastapi.openapi.utils import get_openapi
+from fastapi.responses import JSONResponse
 
 from src.phishing.config.settings import settings
-from src.phishing.core.detector import PhishingDetector, DetectionError
+from src.phishing.core.detector import DetectionError, PhishingDetector
 from src.phishing.models.schemas import (
-    URLInput,
-    PredictionResponse,
     BatchPredictionRequest,
     BatchPredictionResponse,
-    HealthResponse,
     ErrorResponse,
+    HealthResponse,
+    PredictionResponse,
+    URLInput,
 )
 from src.phishing.utils.logging_config import get_logger, safe_error_message
 from src.phishing.utils.validators import URLValidationError
@@ -77,9 +76,7 @@ def create_app() -> FastAPI:
             description="Real-time phishing URL detection API",
             routes=app.routes,
         )
-        openapi_schema["info"]["x-logo"] = {
-            "url": "https://example.com/logo.png"
-        }
+        openapi_schema["info"]["x-logo"] = {"url": "https://example.com/logo.png"}
         app.openapi_schema = openapi_schema
         return app.openapi_schema
 
@@ -175,9 +172,7 @@ def create_app() -> FastAPI:
             failed = [r for r in results if r.get("status") == "failed"]
 
             # Convert to PredictionResponse objects for successful ones
-            prediction_responses = [
-                PredictionResponse(**r) for r in successful
-            ]
+            prediction_responses = [PredictionResponse(**r) for r in successful]
 
             return BatchPredictionResponse(
                 results=prediction_responses,
