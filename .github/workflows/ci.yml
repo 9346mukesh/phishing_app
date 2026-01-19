@@ -65,7 +65,7 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Run Black
-        run: black --check src/ tests/
+        run: black --check --diff src/ tests/
 
       - name: Run isort
         run: isort --check-only src/ tests/
