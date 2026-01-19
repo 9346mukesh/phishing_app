@@ -105,8 +105,8 @@ def create_app() -> FastAPI:
                 "health": "/health",
                 "predict": "/predict",
                 "batch": "/predict-batch",
-                "info": "/info"
-            }
+                "info": "/info",
+            },
         }
 
     @app.get("/health", response_model=HealthResponse, tags=["Health"])
