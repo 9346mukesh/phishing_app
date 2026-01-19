@@ -100,6 +100,15 @@ ignore_errors = false
 
 [tool.ruff]
 line-length = 100
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -112,13 +121,7 @@ ignore = [
     "E501",  # line too long, handled by black
     "E203",  # whitespace before :
     "W191",  # indentation contains tabs
-]
-exclude = [
-    ".git",
-    "__pycache__",
-    ".venv",
-    "build",
-    "dist",
+    "C901",  # function too complex
 ]
 
 [tool.coverage.run]
