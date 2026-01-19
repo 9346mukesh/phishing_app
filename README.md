@@ -1,154 +1,164 @@
-## 🛡️ Phishing Website Detection App
-A robust Machine Learning application designed to identify and classify phishing URLs in real-time using Random Forest algorithms and lexical feature extraction.
+<div align="center">
 
-## 📖 Overview
-In the evolving landscape of cybersecurity, phishing remains one of the most prevalent threats. This project automates the detection of malicious websites by analyzing the structural and lexical components of a URL.
+# 🛡️ Phishing Detection System
 
-The application leverages a pre-trained Random Forest Classifier to evaluate URLs against a set of engineered features (such as length, presence of IP addresses, and shortening services). It is wrapped in a lightweight Streamlit interface, making it accessible for non-technical users to verify links instantly.
+[![CI](https://github.com/mukeshkumarreddy/phishing_app/actions/workflows/ci.yml/badge.svg)](https://github.com/mukeshkumarreddy/phishing_app/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Key Features
-Real-time Analysis: Instant classification of URLs as "Legitimate" or "Phishing".
+Real-time phishing URL detection with FastAPI, Streamlit UI, and a production-ready ML pipeline.
 
-Feature Engineering: Automatically extracts 30 distinct features from the input URL, including domain age, protocol analysis, and special character usage.
+</div>
 
-ML-Powered: Utilizes a Random Forest model (Accuracy ~95.2%) for robust prediction.
+## Overview
+- **ML Classifier**: Random Forest model using 30 lexical URL features
+- **Dual Interfaces**: FastAPI for production use, Streamlit for interactive demo
+- **Security-First**: Strict input validation, structured logging, safe error handling
+- **Production Ready**: Docker, CI/CD pipeline, comprehensive tests, type checking, linting
+- **Clean Deployment**: Repository optimized for GitHub and cloud deployment
 
-Live DNS Check: Validates the existence of the domain using socket connections.
+## Quickstart
 
-Interactive UI: Clean, web-based user interface built with Streamlit.
+### Prerequisites
+- Python 3.8+
+- pip or conda
 
-## 🏗️ System Architecture
-The data flow follows a standard Machine Learning pipeline: Input → Extraction → Scaling → Inference → Output.
+### Installation
+```bash
+git clone https://github.com/mukeshkumarreddy/phishing_app.git
+cd phishing_app
+python -m venv .venv && source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Run API (FastAPI)
+```bash
+python run_api.py
+# API: http://localhost:8000
+# Docs: http://localhost:8000/docs
+```
+
+### Run UI (Streamlit)
+```bash
+python run_ui.py
+# UI: http://localhost:8501
+```
+
+### Run Tests
+```bash
+PYTHONPATH=. pytest tests/ -v --override-ini="addopts="
+```
+
+## Project Structure
+```
+phishing_app/
+├── src/phishing/                   # Main package
+│   ├── api/
+│   │   └── server.py              # FastAPI application and endpoints
+│   ├── core/
+│   │   ├── detector.py            # Prediction pipeline
+│   │   ├── feature_extractor.py   # URL feature extraction
+│   │   └── model_loader.py        # Safe model and scaler loading
+│   ├── config/
+│   │   └── settings.py            # Configuration management
+│   ├── models/
+│   │   └── schemas.py             # Pydantic request/response schemas
+│   ├── ui/
+│   │   └── app.py                 # Streamlit web interface
+│   └── utils/
+│       ├── logging_config.py      # Logging setup
+│       └── validators.py          # Input validation utilities
+├── tests/                          # Pytest test suite
+│   ├── test_api.py
+│   ├── test_feature_extraction.py
+│   ├── test_model_loader.py
+│   └── test_validators.py
+├── models/
+│   ├── phishing_rf_model.pkl      # Trained Random Forest model
+│   └── scaler.pkl                 # Feature scaler
+├── docker-compose.yml             # Multi-container setup
+├── Dockerfile                      # API deployment container
+├── Dockerfile.streamlit            # UI deployment container
+├── Makefile                        # Common development commands
+├── DEPLOYMENT.md                   # Deployment guide
+├── AWS_DEPLOYMENT_GUIDE.md         # AWS-specific setup
+├── SECURITY.md                     # Security best practices
+├── ARCHITECTURE.md                 # Architecture documentation
+├── requirements.txt                # Production dependencies
+├── requirements-dev.txt            # Development dependencies
+└── README.md                       # This file
+```
+
+## API Usage
+
+### Health Check
+```bash
+curl http://localhost:8000/health
+```
+
+### Single URL Prediction
+```bash
+curl -X POST http://localhost:8000/predict \
+    -H "Content-Type: application/json" \
+    -d '{"url": "https://www.google.com"}'
+```
+
+### Batch Prediction
+```bash
+curl -X POST http://localhost:8000/predict-batch \
+    -H "Content-Type: application/json" \
+    -d '{"urls": ["https://www.google.com", "http://example.com"]}'
+```
+
+## Docker Deployment
+
+### Build and Run
+```bash
+docker build -t phishing-app .
+docker run -p 8000:8000 phishing-app
+```
+
+### Docker Compose (API + UI)
+```bash
+docker-compose up -d
+# API: http://localhost:8000
+# UI: http://localhost:8501
+```
+
+## Performance Metrics
+- **Single Prediction**: ~50–100ms
+- **Batch (3 URLs)**: ~100–150ms
+- **Model Startup**: ~2.2s
 
 
-    graph LR
-    A[User Input URL] --> B[Feature Extractor]
-    B -->|Lexical & DNS Analysis| C[Feature Vector (1x30)]
-    C --> D[Standard Scaler]
-    D -->|Normalized Data| E[Random Forest Model]
-    E --> F{Prediction}
-    F -->|0| G[✅ Legitimate]
-    F -->|1| H[🚨 Phishing]
-## 🔬 Algorithm & Logic
-The core intelligence lies in extract_features.py. The model does not read the website content (HTML); instead, it analyzes the URL string itself.
 
-Feature Extraction Strategy
-The system extracts a feature vector containing 30 data points. Key heuristics include:
+## Deployment
 
-IP Address Check: Phishing sites often use IP addresses instead of domain names.
+### Free Deployment Options ✅
+Deploy at zero cost:
+- **Railway** - API + UI with $5/month free credits (covers both services)
+- **Streamlit Cloud** - Free UI hosting (no backend)
+- **Oracle Cloud** - Always-free tier with VM instances
+- **Render** - Free tier for FastAPI apps
+- **Docker locally** - Run on your machine
 
-URL Length: Long URLs (>= 54 chars) are flagged as suspicious; extremely long URLs (>= 75) are high risk.
+📖 **See [FREE_DEPLOYMENT_STEPS.md](FREE_DEPLOYMENT_STEPS.md)** for complete step-by-step guides for each platform!
 
-Shortening Services: Checks against a blacklist of shorteners (bit.ly, tinyurl, etc.) often used to hide malicious links.
+### AWS Deployment (Paid Option)
+For production with auto-scaling:
+- See [AWS_DEPLOYMENT_GUIDE.md](AWS_DEPLOYMENT_GUIDE.md) for ECR, ECS, ALB setup
+- Quick deploy: `./deploy-to-aws.sh`
 
-Special Characters: Presence of @ (ignoring browser credentials) or multiple slashes //.
+### Local Docker Deployment
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed procedures.
 
-Subdomain Depth: Counts the number of dots in the subdomain.
+## Contributing
+- See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- All pull requests must pass tests: `pytest tests/ -v`
+- Code formatting: `black src/ tests/`
+- Linting: `pylint src/`
 
-Protocol: Checks for https usage and verifies if https token is deceptively used in the domain name.
+## Security
+Please review [SECURITY.md](SECURITY.md) for security best practices and vulnerability reporting procedures.
 
-DNS Validation: Uses socket.gethostbyname to verify the domain actually resolves.
-
-Note: The feature vector is padded to a length of 30 to ensure compatibility with the input shape required by the trained Random Forest model.
-
-## 🛠️ Tech Stack
-    | Component        | Technology              | Purpose                              |
-    |------------------|--------------------------|--------------------------------------|
-    | Language         | Python                   | Core logic and scripting             |
-    | Frontend         | Streamlit                | Web application interface            |
-    | ML Engine        | Scikit-Learn             | Random Forest implementation         |
-    | Data Processing  | Pandas / NumPy           | Array manipulation                   |
-    | Serialization    | Joblib                   | Loading trained models (.pkl)        |
-    | Networking       | Tldextract / Socket      | Domain parsing and DNS validation    |
-
-## 📂 Project Structure
-Bash
- 
-    phishing_app/
-    ├── app.py                     # Main Streamlit application entry point
-    ├── extract_features.py        # Core logic for feature extraction from URLs
-    ├── test_model.py              # CLI script for testing predictions manually
-    ├── phishing_rf_model.pkl      # Pre-trained Random Forest Classifier
-    ├── scaler.pkl                 # Pre-fitted Standard Scaler for normalization
-    ├── phishing_dataset.csv       # Dataset used for training/validation
-    ├── requirements.txt           # Project dependencies
-    ├── ppt.pptx                   # Project presentation and documentation
-    └── README.md                  # Project documentation
-## ⚙️ Installation & Setup
-Follow these steps to set up the project locally.
-
-1. Clone the Repository
-
-       git clone https://github.com/your-username/phishing_app.git
-       cd phishing_app
-2. Create Virtual Environment (Recommended)
-Bash
-
-       python -m venv venv
-  # Windows
-       venv\Scripts\activate
-# Mac/Linux
-      source venv/bin/activate
-3. Install Dependencies
-    Bash
-
-       pip install -r requirements.txt
-## 🖥️ Usage
-Running the Web App
-To launch the interactive dashboard:
-
-Bash
-
-     streamlit run app.py
-The app will open in your default browser at http://localhost:8501.
-
-Running via CLI
-To test a specific URL without the UI:
-
-       Open test_model.py.
-
-Edit the url variable.
-
-Run:
-
-Bash
-
-     python test_model.py
-Sample Output:
-
-Plaintext
-
-Extracted features: [1, -1, 1, 1, 1, 1, 0, 1, -1, 0, 0, 0, 1, ...]
-Prediction: 🚨 Phishing
-## 📊 Dataset & Performance
-The model was trained on a balanced dataset containing legitimate and phishing URLs.
-
-Dataset Source: phishing_dataset.csv (Mixed sources including OpenPhish and PhishTank).
-
-Labels:
-
-0: Legitimate Website
-
-1: Phishing Website
-
-Model Performance:
-
-Accuracy: ~95.2%
-
-Precision/Recall: High precision in detecting deceptive shortening services.
-
-## 🔮 Future Enhancements
-Content-Based Analysis: Implement HTML scraping (BeautifulSoup) to analyze page content and forms.
-
-WHOIS Integration: Check domain registration date (newly created domains are often malicious).
-
-API Development: Migrate the backend to Flask/FastAPI to expose the detection engine as a REST API.
-
-Deep Learning: Experiment with CNNs or RNNs for character-level URL analysis.
-
-## 👥 Contributors
-Mukesh Kumar Reddy - Team Lead & ML Engineer
-
-Yogeswar - Data Analysis
-
-Pranav - Backend Logic
+## License
+MIT — see [LICENSE](LICENSE).
