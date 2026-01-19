@@ -92,6 +92,23 @@ def create_app() -> FastAPI:
         return response
 
     # Routes
+    @app.get("/", tags=["Root"])
+    async def root():
+        """Root endpoint - API information."""
+        return {
+            "app_name": settings.app_name,
+            "version": settings.app_version,
+            "status": "running",
+            "message": "Phishing Detection API is operational",
+            "docs": "/docs",
+            "endpoints": {
+                "health": "/health",
+                "predict": "/predict",
+                "batch": "/predict-batch",
+                "info": "/info"
+            }
+        }
+
     @app.get("/health", response_model=HealthResponse, tags=["Health"])
     async def health_check():
         """Health check endpoint."""
