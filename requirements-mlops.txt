@@ -1,0 +1,24 @@
+# MLOps Dependencies (all free & open-source)
+# ==============================================
+
+# Experiment Tracking & Model Registry
+mlflow>=2.9.0
+
+# Data & Model Versioning
+dvc>=3.30.0
+
+# Data Validation
+great-expectations>=0.18.0
+
+# Monitoring & Drift Detection
+evidently>=0.4.0
+
+# Pipeline Parameters
+pyyaml>=6.0.0
+
+# Visualization (for training plots)
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Scientific Computing (for drift detection)
+scipy>=1.11.0

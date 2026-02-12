@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+from pathlib import Path
 
 import requests
 import streamlit as st
@@ -113,8 +114,28 @@ st.markdown(
 )
 
 # API configuration
-# Prefer Streamlit secrets in cloud, fall back to environment/local default
-API_URL = os.getenv("API_URL") or st.secrets.get("API_URL", "http://localhost:8000")
+# Prefer environment variable, then Streamlit secrets, then localhost default
+try:
+    API_URL = os.getenv("API_URL") or st.secrets.get("API_URL", "http://localhost:8000")
+except Exception:
+    API_URL = os.getenv("API_URL", "http://localhost:8000")
+
+# --- Standalone mode: use PhishingDetector directly when API is unavailable ---
+_detector = None
+
+
+def _get_detector():
+    """Lazy-load the PhishingDetector for standalone mode."""
+    global _detector
+    if _detector is None:
+        try:
+            from src.phishing.core.detector import PhishingDetector
+
+            _detector = PhishingDetector(auto_load=True)
+        except Exception as e:
+            logger.error(f"Failed to load detector: {e}")
+            return None
+    return _detector
 
 
 def get_api_health():
@@ -128,7 +149,8 @@ def get_api_health():
 
 
 def predict_url(url: str):
-    """Get prediction from API."""
+    """Get prediction — try API first, fall back to local model."""
+    # Try API first
     try:
         response = requests.post(
             f"{API_URL}/predict",
@@ -137,15 +159,29 @@ def predict_url(url: str):
         )
         if response.status_code == 200:
             return response.json()
-        else:
-            return {"error": response.json().get("detail", "Prediction failed")}
-    except requests.exceptions.RequestException as e:
-        logger.error(f"API request failed: {str(e)}")
-        return {"error": f"API Error: {str(e)}"}
+    except requests.exceptions.RequestException:
+        pass
+
+    # Fallback: local detector
+    detector = _get_detector()
+    if detector and detector.is_ready:
+        try:
+            prediction, confidence, label = detector.predict(url)
+            return {
+                "prediction": prediction,
+                "confidence": confidence,
+                "label": label,
+                "url": url,
+                "features_count": 30,
+            }
+        except Exception as e:
+            return {"error": f"Prediction failed: {str(e)}"}
+    return {"error": "API unavailable and local model could not be loaded"}
 
 
 def predict_batch(urls: list):
-    """Get batch predictions from API."""
+    """Get batch predictions — try API first, fall back to local model."""
+    # Try API first
     try:
         response = requests.post(
             f"{API_URL}/predict-batch",
@@ -154,11 +190,15 @@ def predict_batch(urls: list):
         )
         if response.status_code == 200:
             return response.json()
-        else:
-            return {"error": response.json().get("detail", "Batch prediction failed")}
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Batch API request failed: {str(e)}")
-        return {"error": f"API Error: {str(e)}"}
+    except requests.exceptions.RequestException:
+        pass
+
+    # Fallback: local detector
+    detector = _get_detector()
+    if detector and detector.is_ready:
+        results = detector.predict_batch(urls)
+        return {"results": results, "total": len(urls)}
+    return {"error": "API unavailable and local model could not be loaded"}
 
 
 # Sidebar
@@ -169,11 +209,15 @@ with st.sidebar:
     )
 
     api_status = get_api_health()
+    detector = _get_detector()
+    model_ready = api_status or (detector is not None and detector.is_ready)
 
     if api_status:
         st.success("🟢 **API Status:** Connected", icon="✅")
+    elif model_ready:
+        st.info("🟡 **Mode:** Local Model", icon="🔧")
     else:
-        st.error("🔴 **API Status:** Disconnected", icon="❌")
+        st.error("🔴 **Status:** No model available", icon="❌")
 
     st.divider()
 
@@ -214,8 +258,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-if not api_status:
-    st.error(f"❌ **API Service Unavailable** - Cannot connect to {API_URL}", icon="🚨")
+if not model_ready:
+    st.error("❌ **Service Unavailable** — No API or local model found", icon="🚨")
 else:
     if "🔍 Single URL Analysis" in mode:
         # Single URL analysis

@@ -1,0 +1,61 @@
+stages:
+  validate_data:
+    cmd: python -m src.phishing.mlops.data_validation
+    deps:
+      - data/phishing_dataset.csv
+      - src/phishing/mlops/data_validation.py
+    outs:
+      - reports/data_validation_report.json:
+          cache: false
+
+  train:
+    cmd: python -m src.phishing.mlops.train
+    deps:
+      - data/phishing_dataset.csv
+      - src/phishing/core/feature_extractor.py
+      - src/phishing/mlops/train.py
+    params:
+      - params.yaml:
+          - train.n_estimators
+          - train.max_depth
+          - train.min_samples_split
+          - train.min_samples_leaf
+          - train.test_size
+          - train.random_state
+          - train.cv_folds
+    outs:
+      - models/phishing_rf_model.pkl
+      - models/scaler.pkl
+    metrics:
+      - models/metrics.json:
+          cache: false
+    plots:
+      - reports/plots/:
+          cache: false
+
+  evaluate:
+    cmd: python -m src.phishing.mlops.evaluate
+    deps:
+      - models/phishing_rf_model.pkl
+      - models/scaler.pkl
+      - data/phishing_dataset.csv
+      - src/phishing/mlops/evaluate.py
+    metrics:
+      - reports/evaluation_metrics.json:
+          cache: false
+    plots:
+      - reports/evaluation_plots/:
+          cache: false
+
+  monitor:
+    cmd: python -m src.phishing.mlops.monitor
+    deps:
+      - models/phishing_rf_model.pkl
+      - models/scaler.pkl
+      - data/phishing_dataset.csv
+      - src/phishing/mlops/monitor.py
+    outs:
+      - reports/drift_report.html:
+          cache: false
+      - reports/drift_metrics.json:
+          cache: false

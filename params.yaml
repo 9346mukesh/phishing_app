@@ -1,0 +1,48 @@
+# =============================================================================
+# Model Training Parameters
+# =============================================================================
+train:
+  # Random Forest hyperparameters
+  n_estimators: 200
+  max_depth: 20
+  min_samples_split: 5
+  min_samples_leaf: 2
+  max_features: "sqrt"
+  class_weight: "balanced"
+
+  # Data split
+  test_size: 0.2
+  random_state: 42
+
+  # Cross-validation
+  cv_folds: 5
+
+  # Feature extraction
+  num_features: 30
+
+# =============================================================================
+# Data Validation Thresholds
+# =============================================================================
+data_validation:
+  min_samples: 100
+  max_null_ratio: 0.05
+  expected_label_values: [0, 1]
+  min_class_ratio: 0.2  # minimum fraction of minority class
+
+# =============================================================================
+# Model Evaluation Thresholds
+# =============================================================================
+evaluation:
+  min_accuracy: 0.85
+  min_precision: 0.85
+  min_recall: 0.85
+  min_f1: 0.85
+  min_roc_auc: 0.90
+
+# =============================================================================
+# Monitoring Configuration
+# =============================================================================
+monitoring:
+  drift_threshold: 0.05  # p-value threshold for drift detection
+  reference_window_size: 200
+  current_window_size: 50

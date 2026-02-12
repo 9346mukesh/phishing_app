@@ -1,0 +1,117 @@
+schema: '2.0'
+stages:
+  validate_data:
+    cmd: python -m src.phishing.mlops.data_validation
+    deps:
+    - path: data/phishing_dataset.csv
+      hash: md5
+      md5: d53a9b5a6d81b37f46aee6f424c6eea4
+      size: 8505
+    - path: src/phishing/mlops/data_validation.py
+      hash: md5
+      md5: 4ee71f229a1a8a4d7df5238c32440ea9
+      size: 9485
+    outs:
+    - path: reports/data_validation_report.json
+      hash: md5
+      md5: e9983e60a49b9587819116a410fe0147
+      size: 1129
+  train:
+    cmd: python -m src.phishing.mlops.train
+    deps:
+    - path: data/phishing_dataset.csv
+      hash: md5
+      md5: d53a9b5a6d81b37f46aee6f424c6eea4
+      size: 8505
+    - path: src/phishing/core/feature_extractor.py
+      hash: md5
+      md5: fe2d87ed8e272470381341751f8e2c0b
+      size: 7111
+    - path: src/phishing/mlops/train.py
+      hash: md5
+      md5: d238b52638673bd9571f40fb7501172e
+      size: 13949
+    params:
+      params.yaml:
+        train.cv_folds: 5
+        train.max_depth: 20
+        train.min_samples_leaf: 2
+        train.min_samples_split: 5
+        train.n_estimators: 200
+        train.random_state: 42
+        train.test_size: 0.2
+    outs:
+    - path: models/metrics.json
+      hash: md5
+      md5: 887d831337e15c3c5f54106c3352c126
+      size: 957
+    - path: models/phishing_rf_model.pkl
+      hash: md5
+      md5: 8d972cdfea4fa4be4c88f4b2b8b86a7a
+      size: 205945
+    - path: models/scaler.pkl
+      hash: md5
+      md5: a00390b03946d5b17a08774fb3bde7ab
+      size: 1335
+    - path: reports/plots/
+      hash: md5
+      md5: 2d2edc062d473539b8bf8328b9ce91a6.dir
+      size: 138008
+      nfiles: 3
+  evaluate:
+    cmd: python -m src.phishing.mlops.evaluate
+    deps:
+    - path: data/phishing_dataset.csv
+      hash: md5
+      md5: d53a9b5a6d81b37f46aee6f424c6eea4
+      size: 8505
+    - path: models/phishing_rf_model.pkl
+      hash: md5
+      md5: 8d972cdfea4fa4be4c88f4b2b8b86a7a
+      size: 205945
+    - path: models/scaler.pkl
+      hash: md5
+      md5: a00390b03946d5b17a08774fb3bde7ab
+      size: 1335
+    - path: src/phishing/mlops/evaluate.py
+      hash: md5
+      md5: f744a1caf13c951830636f3b2212dd7b
+      size: 9468
+    outs:
+    - path: reports/evaluation_metrics.json
+      hash: md5
+      md5: c2fab7c9a490e01d8da5902530190b98
+      size: 1577
+    - path: reports/evaluation_plots/
+      hash: md5
+      md5: 9f300afbea26b795cf919d2829d78d82.dir
+      size: 124769
+      nfiles: 3
+  monitor:
+    cmd: python -m src.phishing.mlops.monitor
+    deps:
+    - path: data/phishing_dataset.csv
+      hash: md5
+      md5: d53a9b5a6d81b37f46aee6f424c6eea4
+      size: 8505
+    - path: models/phishing_rf_model.pkl
+      hash: md5
+      md5: 8d972cdfea4fa4be4c88f4b2b8b86a7a
+      size: 205945
+    - path: models/scaler.pkl
+      hash: md5
+      md5: a00390b03946d5b17a08774fb3bde7ab
+      size: 1335
+    - path: src/phishing/mlops/monitor.py
+      hash: md5
+      md5: 64c702f5008ae9f9c440ed0c59a4b5ab
+      size: 12559
+    outs:
+    - path: reports/drift_metrics.json
+      hash: md5
+      md5: f705267d2cb3865e338102d9090a34cf
+      size: 7693
+    - path: reports/drift_report.html
+      hash: md5
+      md5: b12d2e1755288908b0bc4a72f06f445e
+      size: 11453

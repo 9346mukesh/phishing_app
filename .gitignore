@@ -54,8 +54,7 @@ htmlcov/
 *.whl
 *.tar.gz
 
-# === Model & Dataset artifacts (managed by DVC) ===
-*.pkl
+# === Model & Dataset artifacts ===
 *.joblib
 *.csv
 !requirements*.txt
@@ -99,5 +98,4 @@ reports/
 # DVC
 /data/*.csv
 *.dvc.lock
-models/*.pkl
 models/metrics.json
