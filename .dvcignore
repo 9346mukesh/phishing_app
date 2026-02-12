@@ -1,0 +1,10 @@
+# DVC ignore patterns
+__pycache__
+.git
+.venv
+venv
+.mypy_cache
+.pytest_cache
+.ruff_cache
+htmlcov
+*.pyc

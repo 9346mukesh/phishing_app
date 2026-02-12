@@ -54,7 +54,7 @@ htmlcov/
 *.whl
 *.tar.gz
 
-# === Model & Dataset artifacts (managed separately) ===
+# === Model & Dataset artifacts (managed by DVC) ===
 *.pkl
 *.joblib
 *.csv
@@ -89,3 +89,15 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# === MLOps ===
+mlruns/
+mlflow.db
+reports/
+!reports/.gitkeep
+
+# DVC
+/data/*.csv
+*.dvc.lock
+models/*.pkl
+models/metrics.json
