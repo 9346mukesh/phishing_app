@@ -1,38 +1,20 @@
-# Gitignore for Phishing Detection System
+# Phishing Detection System - .gitignore
 
 # === Python ===
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
-pip-log.txt
-pip-delete-this-directory.txt
+dist/
+build/
 
-# === Virtual environments ===
+# === Virtual Environments ===
 venv/
 .venv/
-ENV/
-env/
 .env
 .env.local
-.env.*.local
 
 # === IDE & Editors ===
 .vscode/
@@ -40,62 +22,35 @@ env/
 *.swp
 *.swo
 *~
-.DS_Store
 *.code-workspace
 
-# === Testing & Coverage ===
+# === Testing ===
 .pytest_cache/
 .mypy_cache/
 .coverage
 htmlcov/
 .tox/
 
-# === Build artifacts ===
-*.whl
-*.tar.gz
-
-# === Model & Dataset artifacts ===
-*.joblib
-*.csv
-!requirements*.txt
-
-# === Development datasets ===
-data/
-datasets/
-*.zip
-*.tar
-
-# === Environment logs ===
-*.log
-logs/
-
-# === MacOS specific ===
-.DS_Store
-.AppleDouble
-.LSOverride
-*.onnx
-
-# Data
-*.csv
-*.xlsx
-*.xls
-
-# OS
+# === OS ===
 .DS_Store
 Thumbs.db
 
-# Temporary
-tmp/
-temp/
-*.tmp
+# === Data & Models ===
+data/
+*.csv
+!requirements*.txt
+*.joblib
+models/metrics.json
 
-# === MLOps ===
+# === MLOps Runtime ===
 mlruns/
 mlflow.db
 reports/
 !reports/.gitkeep
+dvc.lock
 
-# DVC
-/data/*.csv
-*.dvc.lock
-models/metrics.json
+# === Temporary ===
+*.log
+logs/
+tmp/
+temp/
